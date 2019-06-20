@@ -87,6 +87,21 @@ public class Window extends JFrame {
         this.setSize(new Dimension(BOARD_SIZE + 100,BOARD_SIZE));
         this.setVisible(true);
 
+        while (true){
+            if (game.updated()){
+                boolean[][] newBoard = game.getBoard();
+                synchronized (this){
+                    int i = 0;
+                    int j = 0;
+                    for (boolean[] boolAry : newBoard){
+                        for (boolean bool : boolAry){
+
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     public void createGamePanel(){
@@ -99,8 +114,14 @@ public class Window extends JFrame {
     public void createBoard(int num){
         board = new Tile[num][num];
 
+        window.remove(gamePanel);
+        
+        gamePanel = new JPanel();
+
+        window.add(gamePanel, BorderLayout.CENTER);
+
         gameLayout = new GridLayout(num,num);
-        createGamePanel();
+        gamePanel.setLayout(gameLayout);
 
         for (int i = 0; i < num; i++){
             for (int j = 0; j < num; j++){
@@ -116,56 +137,78 @@ public class Window extends JFrame {
     }
 
     // Represents a node on the board
-    class Tile extends JPanel implements MouseListener {
+    class Tile extends JPanel {
 
         int x;
         int y;
         boolean on;
 
-        public Tile(int dimension, int x, int y){
+        public Tile(int dimension, int x, int y) {
             this.setBackground(Color.white);
             on = false;
-            this.setSize(new Dimension(dimension,dimension));
+            this.setSize(new Dimension(dimension, dimension));
             this.x = x;
             this.y = y;
-            if (x == 1){
+            if (x == 1) {
                 this.setBackground(Color.black);
             }
+            this.addMouseListener(new TileListener(this));
         }
 
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            game.togglePiece(x,y);
-            if (on){
-                on = false;
+        public int getTileX() {
+            return x;
+        }
+
+        public int getTileY() {
+            return y;
+        }
+
+        public boolean isOn() {
+            return on;
+        }
+
+        public void setOn(boolean bool){
+            this.on = bool;
+            if (bool){
+                this.setBackground(Color.black);
+            } else {
                 this.setBackground(Color.white);
-            } else{
-                on = true;
-                this.setBackground(Color.black);
             }
-            this.repaint();
-            this.revalidate();
         }
+
+        public void setColor(Color color){
+            this.setBackground(color);
+        }
+    }
+    class TileListener implements MouseListener {
+
+        Tile tile;
+
+        public TileListener(Tile tile){
+            this.tile = tile;
+        }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {}
+        @Override
+        public void mousePressed(MouseEvent e) { game.togglePiece(tile.getTileX(), tile.getTileY());
+            if (tile.isOn()) {
+                tile.setOn(false);
+                tile.setColor(Color.white);
+            } else {
+                tile.setOn(true);
+                tile.setColor(Color.black);
+
+            }}
 
         @Override
-        public void mousePressed(MouseEvent e) {
-
-        }
+        public void mouseReleased(MouseEvent e) { }
 
         @Override
-        public void mouseReleased(MouseEvent e) {
-
-        }
+        public void mouseEntered(MouseEvent e) { }
 
         @Override
-        public void mouseEntered(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-
-        }
+        public void mouseExited(MouseEvent e) { }
     }
 
 }

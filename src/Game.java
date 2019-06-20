@@ -28,4 +28,9 @@ public class Game implements ConwayGame,Runnable {
     public void run() {
 
     }
+
+    @Override
+    public boolean updated(){
+        return false;
+    }
 }

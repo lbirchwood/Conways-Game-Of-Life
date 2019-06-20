@@ -26,4 +26,9 @@ public interface ConwayGame {
      */
     public void togglePiece(int x, int y);
 
+    /**
+     * Checks if the board has been updated
+     */
+    public boolean updated();
+
 }
